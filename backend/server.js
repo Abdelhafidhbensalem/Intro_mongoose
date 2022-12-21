@@ -1,8 +1,12 @@
 const express = require('express')
+const cors=require('cors')
 const connectDB = require('./config/connectDB')
 const User = require("./models/User")
 const app = express()
+
 require("dotenv").config()
+
+app.use(cors())
 app.use(express.json())
 //console.log(process.env);
 

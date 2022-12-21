@@ -1,20 +1,23 @@
 {
-  "name": "mongoose_ws",
+  "name": "mern",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "back": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev":"concurrently \"cd backend && npm run back\" \"cd client && npm start\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abdelhafidhbensalem/Intro_mongoose.git"
   },
   "author": "abs",
   "license": "ISC",
-  "dependencies": {
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "mongoose": "^6.8.0"
+  "bugs": {
+    "url": "https://github.com/Abdelhafidhbensalem/Intro_mongoose/issues"
   },
-  "devDependencies": {
-    "nodemon": "^2.0.20"
+  "homepage": "https://github.com/Abdelhafidhbensalem/Intro_mongoose#readme",
+  "dependencies": {
+    "concurrently": "^7.6.0"
   }
 }
