@@ -17,7 +17,7 @@ export default function Product({ el }) {
         component="img"
         alt="green iguana"
         height="140"
-        image="/static/images/cards/contemplative-reptile.jpg"
+        image={el.imageSrc}
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">

@@ -6,6 +6,7 @@ const app = express()
 
 require("dotenv").config()
 
+app.use("/uploads",express.static(__dirname+"/uploads"))
 app.use(cors())
 app.use(express.json())
 //console.log(process.env);

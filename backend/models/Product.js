@@ -5,7 +5,7 @@ const productSchema = new mongoose.Schema({
     category: { type: String, required: true, enum: ["tablette", "telephone", "others"] },
     createdOn: { type: Date, default: new Date },
     qte: Number,
-    //imageSrc: { type: String }, à faire
+    imageSrc: { type: String },
     //user: { type: mongoose.Schema.Types.ObjectId } à faire
 })
 

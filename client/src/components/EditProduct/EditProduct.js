@@ -6,15 +6,15 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-import { Link as LinkR, Navigate, useNavigate } from "react-router-dom"
+import { Link as LinkR, Navigate, useNavigate, useParams } from "react-router-dom"
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { addProduct } from '../../redux/actions/actionsProduct';
-import { useDispatch } from 'react-redux';
+import { addProduct, editProduct, getOneProduct } from '../../redux/actions/actionsProduct';
+import { useDispatch, useSelector } from 'react-redux';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 function Copyright(props) {
@@ -33,26 +33,28 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function EditProduct() {
-    const [category, setCategory] = React.useState("others")
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const { id } = useParams()
+    const oldProduct = useSelector(state => state.productReducer.oneProduct)
+    
+    React.useEffect(() => {
+        dispatch(getOneProduct(id))
+    }, [])
+
+    React.useEffect(() => {
+        setUpdatedProduct(oldProduct)
+    }, [oldProduct])
+
+
+    const [updatedProduct, setUpdatedProduct] = React.useState(oldProduct)
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            name: data.get('name'),
-            qte: data.get('qte'),
-            category
-        });
-        dispatch(addProduct({
-            name: data.get('name'),
-            qte: data.get('qte'),
-            category
-        },navigate))
+        dispatch(editProduct(id, updatedProduct,navigate))
+        
     };
-    const handleChange = (e) => {
-        setCategory(e.target.value)
-    }
+
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
@@ -69,7 +71,7 @@ export default function EditProduct() {
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                       Edit product
+                        Edit product
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
@@ -82,6 +84,8 @@ export default function EditProduct() {
                                     id="name"
                                     label="Name"
                                     autoFocus
+                                    value={updatedProduct.name}
+                                    onChange={(e) => setUpdatedProduct({ ...updatedProduct, name: e.target.value })}
                                 />
                             </Grid>
 
@@ -93,6 +97,8 @@ export default function EditProduct() {
                                     label="Qte"
                                     name="qte"
                                     type="number"
+                                    value={updatedProduct.qte}
+                                    onChange={(e) => setUpdatedProduct({ ...updatedProduct, qte: e.target.value })}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -101,10 +107,9 @@ export default function EditProduct() {
                                     <Select
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
-                                        value={category}
                                         label="Category"
-                                        onChange={handleChange}
-                                    >
+                                        value={updatedProduct.category}
+                                        onChange={(e) => setUpdatedProduct({ ...updatedProduct, category: e.target.value })}                                    >
                                         <MenuItem value={"tablette"}>tablette</MenuItem>
                                         <MenuItem value={"telephone"}>telephone</MenuItem>
                                         <MenuItem value={"others"}>others</MenuItem>

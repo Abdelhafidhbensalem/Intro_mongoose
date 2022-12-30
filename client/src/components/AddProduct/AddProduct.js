@@ -34,21 +34,23 @@ const theme = createTheme();
 
 export default function AddProduct() {
     const [category, setCategory] = React.useState("others")
+    const [file, setFile] = React.useState("")
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+        const data2 = new FormData();
         console.log({
             name: data.get('name'),
             qte: data.get('qte'),
             category
         });
-        dispatch(addProduct({
-            name: data.get('name'),
-            qte: data.get('qte'),
-            category
-        },navigate))
+        data2.append("file", file)
+        data2.append("name", data.get('name'))
+        data2.append("qte", data.get('qte'))
+        data2.append("category", category)
+        dispatch(addProduct(data2, navigate))
     };
     const handleChange = (e) => {
         setCategory(e.target.value)
@@ -93,6 +95,17 @@ export default function AddProduct() {
                                     label="Qte"
                                     name="qte"
                                     type="number"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="file"
+                                    label="image"
+                                    name="file"
+                                    type="file"
+                                    onChange={(e) => setFile(e.target.files[0])}
                                 />
                             </Grid>
                             <Grid item xs={12}>

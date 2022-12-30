@@ -2,7 +2,7 @@ const express = require('express')
 const checkName = require('../middlewares/checkName')
 const Product = require('../models/Product')
 const router = express.Router()
-
+const upload = require('../utils/multer')
 router.get("/test", (req, res) => {
     res.send('router product')
 })
@@ -11,11 +11,11 @@ router.get("/test", (req, res) => {
 
 router.get("/", async (req, res) => {
     //console.log(typeof req.query.category);
-    const cat =  req.query.category || "";
-    const name =  req.query.name || "";
+    const cat = req.query.category || "";
+    const name = req.query.name || "";
     console.log(cat);
     try {
-        const allProducts = await Product.find({ category: { $regex: cat },name:{ $regex: name,$options: "i" } })
+        const allProducts = await Product.find({ category: { $regex: cat }, name: { $regex: name, $options: "i" } })
         res.send({ products: allProducts })
     } catch (error) {
         console.log(error);
@@ -24,11 +24,16 @@ router.get("/", async (req, res) => {
 })
 
 //add new product
-router.post("/add", async (req, res) => {
+router.post("/add", upload("products").single("file"), async (req, res) => {
+    const url = `${req.protocol}://${req.get('host')}`;
     try {
         //req.body=={name:"xx",age...}
-        console.log(req.body)
+        //console.log(req.body)
+        const img = `${url}/${req.file.path}`
+
         const newProduct = new Product(req.body)
+        ////////////////nooooooooo   newProduct = { ...newProduct, imgSrc: img }
+        newProduct.imageSrc = img
         await newProduct.save()
         res.send({ msg: "product added successfully", newProduct })
     } catch (error) {
@@ -72,9 +77,20 @@ router.delete("/delete/:idDelete", async (req, res) => {
         console.log(error);
         res.status(400).send(error)
     }
-
-
 })
 
+// get one Product
+router.get("/oneProduct/:id", async (req, res) => {
+
+    try {
+        const oneProduct = await Product.findOne({ _id: req.params.id })
+        res.send({ product: oneProduct })
+
+    } catch (error) {
+        console.log(error);
+        res.status(400).send(error)
+    }
+
+})
 
 module.exports = router
